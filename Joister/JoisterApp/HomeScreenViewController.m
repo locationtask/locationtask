@@ -10,6 +10,7 @@
 #import "LocationManager.h"
 #import "Location.h"
 #import "LocationTableViewCell.h"
+#import "MapViewViewController.h"
 #import <CoreLocation/CoreLocation.h>
 
 @interface HomeScreenViewController () <CLLocationManagerDelegate,UITableViewDataSource,UITableViewDelegate> {
@@ -68,6 +69,9 @@
     LocationManager *location = [[LocationManager alloc] init];
     CGFloat lat = userCoordinate.latitude;
     CGFloat lng = userCoordinate.longitude;
+    //Storing into userdefaults
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithFloat:lat] forKey:@"Lat"];
+    [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithFloat:lng] forKey:@"Lng"];
     //Making a call with updated coordinates and calculate list with different distances
     locationMainArray = [[location calculateByDistanceFromLocation:lat lng:lng] mutableCopy];
     [locationTableView reloadData];
@@ -104,6 +108,27 @@
     cell.landMark.text   = [NSString stringWithFormat:@"Landmark: %@",loc.landmark];
     return cell;
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSArray *locArray = [NSArray arrayWithArray:[locationMainArray objectAtIndex:indexPath.section]];
+    Location *loc = (Location *)[locArray objectAtIndex:indexPath.row];
+    [self performSegueWithIdentifier:@"showMapOnTap" sender:loc];
+}
+#pragma mark- Map Button Action
+- (IBAction)mapButtonAction:(id)sender {
+    [self performSegueWithIdentifier:@"showMapSegue" sender:nil];
+}
+
+#pragma mark-
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([segue.identifier isEqualToString:@"showMapOnTap"]) {
+        MapViewViewController *mapVC = segue.destinationViewController;
+        mapVC.location = (Location *)sender;
+    }else if([segue.identifier isEqualToString:@"showMapSegue"]) {
+        
+    }
+}
+
+
 #pragma mark-
 
 - (void)didReceiveMemoryWarning {

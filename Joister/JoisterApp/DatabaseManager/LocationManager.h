@@ -7,8 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Location.h"
 
 @interface LocationManager : NSObject
 -(void)insertRecordsIntoLocationTableWithArray:(NSArray *)locationArray;
 -(NSMutableArray *)calculateByDistanceFromLocation:(CGFloat )lat lng:(CGFloat)lng;
+-(NSMutableArray *)allLocationRecords;
 @end

@@ -7,7 +7,6 @@
 //
 
 #import "LocationManager.h"
-#import "Location.h"
 #import "DatabaseManager.h"
 
 @implementation LocationManager
@@ -85,4 +84,36 @@
     }
     return locationMainArray;
 }
+-(NSMutableArray *)allLocationRecords {
+    
+    //Creating mainArrays
+    NSMutableArray *locationMainArray = [NSMutableArray array];
+    
+    [[[DatabaseManager sharedDatabaseManager] database] open];
+    NSString *query = [NSString stringWithFormat:@"select * FROM location"];
+    FMResultSet *rs = [[[DatabaseManager sharedDatabaseManager] database] executeQuery:query];
+
+    while ([rs next]) {
+            Location *loc =[[Location alloc]init];
+            loc.availablity_Id      =   [rs stringForColumn:@"availability_Id"];
+            loc.availablity_type    =   [rs stringForColumn:@"availability_type"];
+            loc.address_one         =   [rs stringForColumn:@"address_one"];
+            loc.address_two         =   [rs stringForColumn:@"address_two"];
+            loc.landmark            =   [rs stringForColumn:@"landmark"];
+            loc.country             =   [rs stringForColumn:@"country"];
+            loc.states              =   [rs stringForColumn:@"states"];
+            loc.city                =   [rs stringForColumn:@"city"];
+            loc.pincode             =   [rs stringForColumn:@"pincode"];
+            loc.latitude            =   [rs stringForColumn:@"latitude"];
+            loc.longitude           =   [rs stringForColumn:@"longitude"];
+            loc.node_id             =   [rs stringForColumn:@"node_id"];
+            loc.product_id          =   [rs stringForColumn:@"product_id"];
+            loc.updated             =   [rs stringForColumn:@"updated"];
+            
+            [locationMainArray addObject:loc];
+    }
+    
+    return locationMainArray;
+}
+
 @end
